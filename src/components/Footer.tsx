@@ -1,11 +1,18 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 
 export default function Footer() {
+  const [year, setYear] = useState<number | null>(null);
+
+  useEffect(() => {
+    setYear(new Date().getFullYear());
+  }, []);
+
   return (
     <Box component="footer" sx={{ bgcolor: 'background.paper', py: 6, mt: 8 }}>
       <Container maxWidth="lg">
@@ -25,7 +32,7 @@ export default function Footer() {
           <Link color="inherit" href="https://facebook.com/EPM.EnglishClub/">
             EPM Facebook
           </Link>{' '}
-          {new Date().getFullYear()}
+          {year || '...'}
           {'.'}
         </Typography>
       </Container>

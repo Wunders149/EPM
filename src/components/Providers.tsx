@@ -1,23 +1,24 @@
 'use client'
 
 import { SessionProvider } from "next-auth/react"
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#0288d1', // Light Blue
+      main: '#0288d1',
     },
     secondary: {
-      main: '#ff9800', // Orange/Warm
+      main: '#ff9800',
     },
     background: {
       default: '#f8f9fa',
     }
   },
   typography: {
-    fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
+    fontFamily: 'var(--font-roboto), Roboto, Helvetica, Arial, sans-serif',
     h1: {
       fontSize: '2.5rem',
       fontWeight: 700,
@@ -49,11 +50,13 @@ const theme = createTheme({
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <SessionProvider>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        {children}
-      </ThemeProvider>
-    </SessionProvider>
+    <AppRouterCacheProvider>
+      <SessionProvider>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          {children}
+        </ThemeProvider>
+      </SessionProvider>
+    </AppRouterCacheProvider>
   )
 }

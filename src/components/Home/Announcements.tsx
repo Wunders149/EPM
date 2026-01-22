@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
@@ -19,6 +20,12 @@ interface AnnouncementsProps {
 }
 
 export default function AnnouncementsSection({ announcements }: AnnouncementsProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   if (!announcements || announcements.length === 0) return null;
 
   return (
@@ -31,6 +38,11 @@ export default function AnnouncementsSection({ announcements }: AnnouncementsPro
           <Alert key={announcement.id} severity="info" sx={{ mb: 2 }}>
             <AlertTitle>{announcement.title}</AlertTitle>
             {announcement.content}
+            {mounted && (
+              <Typography variant="caption" display="block" sx={{ mt: 1, opacity: 0.8 }}>
+                {new Date(announcement.createdAt).toLocaleDateString()}
+              </Typography>
+            )}
           </Alert>
         ))}
       </Container>
