@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: epm-web
+    env: node
+    plan: free
+    buildCommand: npx prisma generate && npm run build
+    startCommand: npx prisma migrate deploy && node prisma/seed.js && npm run start
+    disk:
+      name: sqlite-data
+      mountPath: /opt/render/project/src/prisma/data
+      sizeGB: 1
+    envVars:
+      - key: DATABASE_URL
+        value: file:/opt/render/project/src/prisma/data/prod.db
+      - key: NEXTAUTH_SECRET
+        generateValue: true
+      - key: NODE_VERSION
+        value: 20

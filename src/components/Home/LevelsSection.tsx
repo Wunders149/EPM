@@ -10,12 +10,14 @@ import Avatar from '@mui/material/Avatar';
 import Chip from '@mui/material/Chip';
 import ContactSupportIcon from '@mui/icons-material/ContactSupport';
 import TopicIcon from '@mui/icons-material/Topic';
+import EventIcon from '@mui/icons-material/Event';
 
 interface Level {
   id: string;
   name: string;
   description: string;
   topic?: string | null;
+  topicDate?: string | null;
   leader?: {
     name: string;
     bio: string | null;
@@ -75,9 +77,17 @@ export default function LevelsSection({ levels }: LevelsProps) {
 
                   {level.topic && (
                     <Box sx={{ mb: 4, p: 2, bgcolor: 'primary.light', color: 'primary.contrastText', borderRadius: 2 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                        <TopicIcon sx={{ mr: 1, fontSize: '1.2rem' }} />
-                        <Typography variant="subtitle2" fontWeight="bold">Today&apos;s Topic</Typography>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                          <TopicIcon sx={{ mr: 1, fontSize: '1.2rem' }} />
+                          <Typography variant="subtitle2" fontWeight="bold">Today&apos;s Topic</Typography>
+                        </Box>
+                        {level.topicDate && (
+                          <Box sx={{ display: 'flex', alignItems: 'center', bgcolor: 'rgba(255,255,255,0.2)', px: 1, borderRadius: 1 }}>
+                            <EventIcon sx={{ mr: 0.5, fontSize: '0.9rem' }} />
+                            <Typography variant="caption" fontWeight="bold">{level.topicDate}</Typography>
+                          </Box>
+                        )}
                       </Box>
                       <Typography variant="h6" sx={{ lineHeight: 1.2 }}>
                         {level.topic}
