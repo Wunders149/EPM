@@ -15,7 +15,7 @@ export async function PUT(
   const params = await props.params;
   const id = params.id;
   const body = await request.json();
-  const { name, description, topic, leaderName, leaderBio, leaderPhoto, leaderContact } = body;
+  const { name, description, topic, topicDate, leaderName, leaderBio, leaderPhoto, leaderContact } = body;
 
   const level = await prisma.level.update({
     where: { id },
@@ -23,6 +23,7 @@ export async function PUT(
       name,
       description,
       topic,
+      topicDate,
       leader: {
         upsert: {
           create: {

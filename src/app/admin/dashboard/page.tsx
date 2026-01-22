@@ -14,7 +14,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LanguageIcon from '@mui/icons-material/Language';
-import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -124,6 +123,7 @@ export default function AdminDashboard() {
         name: currentLevel.name,
         description: currentLevel.description,
         topic: currentLevel.topic,
+        topicDate: currentLevel.topicDate,
         leaderName: currentLevel.leader?.name || currentLevel.leaderName,
         leaderBio: currentLevel.leader?.bio || currentLevel.leaderBio,
         leaderPhoto: currentLevel.leader?.photoUrl || currentLevel.leaderPhoto,
@@ -308,13 +308,12 @@ export default function AdminDashboard() {
                   <CardContent>
                     <Typography variant="h5" color="primary" fontWeight="bold">{level.name}</Typography>
                     <Box sx={{ my: 2, p: 1, bgcolor: 'primary.light', color: 'primary.contrastText', borderRadius: 1 }}>
-                      <Typography variant="caption" display="block">CURRENT TOPIC:</Typography>
+                      <Typography variant="caption" display="block">TOPIC DATE: {level.topicDate || 'Not set'}</Typography>
                       <Typography variant="body2" fontWeight="bold">{level.topic || 'No topic set'}</Typography>
                     </Box>
                     <Typography variant="body2" color="text.secondary" sx={{ height: '3em', overflow: 'hidden' }}>{level.description}</Typography>
                     <Divider sx={{ my: 2 }} />
                     <Typography variant="subtitle2">Leader: {level.leader?.name}</Typography>
-                    <Typography variant="caption" color="text.secondary">{level.leader?.contact || 'No contact info'}</Typography>
                     <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
                       <IconButton onClick={() => { setCurrentLevel(level); setOpenLevelDialog(true); }}><EditIcon /></IconButton>
                       <IconButton onClick={() => handleDeleteLevel(level.id)} color="error"><DeleteIcon /></IconButton>
@@ -370,7 +369,7 @@ export default function AdminDashboard() {
                         <Box sx={{ position: 'relative', pt: '100%', bgcolor: 'black' }}>
                           <Box 
                             component="img" 
-                            src={item.type === 'PHOTO' ? item.url : `https://img.youtube.com/vi/${item.url.split('v=')[1]?.split('&')[0]}/0.jpg`}
+                            src={item.type === 'PHOTO' ? item.url : (item.url.includes('v=') ? `https://img.youtube.com/vi/${item.url.split('v=')[1]?.split('&')[0]}/0.jpg` : `https://img.youtube.com/vi/${item.url.split('/').pop()}/0.jpg`)}
                             sx={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8 }}
                           />
                           <IconButton 
@@ -440,7 +439,13 @@ export default function AdminDashboard() {
             onChange={(e) => setCurrentLevel({ ...currentLevel, description: e.target.value })}
           />
           <TextField
-            margin="dense" label="CURRENT WEEKLY TOPIC" fullWidth sx={{ mt: 2 }}
+            margin="dense" label="DATE FOR THIS TOPIC" fullWidth sx={{ mt: 2 }}
+            value={currentLevel?.topicDate || ''}
+            onChange={(e) => setCurrentLevel({ ...currentLevel, topicDate: e.target.value })}
+            placeholder="e.g. Sunday, Jan 25"
+          />
+          <TextField
+            margin="dense" label="CURRENT WEEKLY TOPIC" fullWidth
             value={currentLevel?.topic || ''}
             onChange={(e) => setCurrentLevel({ ...currentLevel, topic: e.target.value })}
           />

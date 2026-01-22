@@ -26,6 +26,7 @@ model Level {
   name        String
   description String
   topic       String? 
+  topicDate   String? // New: Date for this specific topic
   leader      Leader?
 }
 

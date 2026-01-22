@@ -15,6 +15,7 @@ interface Level {
   id: string;
   name: string;
   topic?: string | null;
+  topicDate?: string | null;
 }
 
 interface SessionProps {
@@ -69,8 +70,13 @@ export default function SessionSection({ session, levels }: SessionProps) {
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 {levels.map((level, idx) => (
                   <Box key={level.id}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-                      <Chip label={level.name} variant="outlined" color="primary" size="small" sx={{ fontWeight: 'bold' }} />
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Chip label={level.name} variant="outlined" color="primary" size="small" sx={{ fontWeight: 'bold' }} />
+                        <Typography variant="caption" sx={{ bgcolor: 'secondary.light', px: 1, borderRadius: 1, fontWeight: 'bold' }}>
+                          {level.topicDate || 'Next Session'}
+                        </Typography>
+                      </Box>
                       <Typography variant="body2" color="text.secondary">Starting @ {session.timeRange.split('–')[0].trim()}</Typography>
                     </Box>
                     <Typography variant="subtitle1" fontWeight="500">
