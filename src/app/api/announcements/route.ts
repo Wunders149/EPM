@@ -1,13 +1,16 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 
 export async function GET() {
+  const session = await getServerSession(authOptions);
+  
   const announcements = await prisma.announcement.findMany({
-    where: { isActive: true },
+    where: session ? {} : { isActive: true },
     orderBy: { createdAt: 'desc' },
   });
+  
   return NextResponse.json(announcements);
 }
 

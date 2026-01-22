@@ -171,6 +171,31 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleToggleAnnouncementActive = async (ann: any) => {
+    try {
+      await fetch(`/api/announcements/${ann.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...ann, isActive: !ann.isActive }),
+      });
+      showSnackbar(ann.isActive ? 'Alert hidden' : 'Alert active');
+      fetchData();
+    } catch (e) {
+      showSnackbar('Failed to update alert', 'error');
+    }
+  };
+
+  const handleDeleteAnnouncement = async (id: string) => {
+    if (!confirm('Permanently delete this alert?')) return;
+    try {
+      await fetch(`/api/announcements/${id}`, { method: 'DELETE' });
+      showSnackbar('Alert deleted');
+      fetchData();
+    } catch (e) {
+      showSnackbar('Failed to delete alert', 'error');
+    }
+  };
+
   const handleCreateGalleryItem = async () => {
     try {
       await fetch('/api/gallery', {
@@ -369,7 +394,7 @@ export default function AdminDashboard() {
                         <Box sx={{ position: 'relative', pt: '100%', bgcolor: 'black' }}>
                           <Box 
                             component="img" 
-                            src={item.type === 'PHOTO' ? item.url : (item.url.includes('v=') ? `https://img.youtube.com/vi/${item.url.split('v=')[1]?.split('&')[0]}/0.jpg` : `https://img.youtube.com/vi/${item.url.split('/').pop()}/0.jpg`)}
+                            src={item.type === 'PHOTO' ? item.url : (item.url.includes('v=') ? `https://img.youtube.com/vi/${item.url.split('v=')[1]?.split('&')[0]}/0.jpg` : (item.url.includes('youtu.be/') ? `https://img.youtube.com/vi/${item.url.split('/').pop()}/0.jpg` : ''))}
                             sx={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8 }}
                           />
                           <IconButton 
@@ -404,13 +429,21 @@ export default function AdminDashboard() {
               </Paper>
             </Grid>
             <Grid size={{ xs: 12, md: 7 }}>
-              <Typography variant="h6" gutterBottom>Recent Alerts</Typography>
+              <Typography variant="h6" gutterBottom>Manage Alerts</Typography>
               {announcements.map((ann) => (
                 <Card key={ann.id} sx={{ mb: 2, borderRadius: 2 }}>
                   <CardContent>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
                       <Typography variant="subtitle1" fontWeight="bold">{ann.title}</Typography>
-                      <Chip label={ann.isActive ? 'Active' : 'Hidden'} size="small" color={ann.isActive ? 'success' : 'default'} />
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <FormControlLabel 
+                          control={<Switch size="small" checked={ann.isActive} onChange={() => handleToggleAnnouncementActive(ann)} />} 
+                          label={ann.isActive ? "Visible" : "Hidden"} 
+                        />
+                        <IconButton size="small" color="error" onClick={() => handleDeleteAnnouncement(ann.id)}>
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Box>
                     </Box>
                     <Typography variant="body2">{ann.content}</Typography>
                     <Typography variant="caption" color="text.secondary">{new Date(ann.createdAt).toLocaleDateString()}</Typography>

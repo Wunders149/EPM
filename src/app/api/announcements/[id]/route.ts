@@ -15,36 +15,18 @@ export async function PUT(
   const params = await props.params;
   const id = params.id;
   const body = await request.json();
-  const { name, description, topic, topicDate, leaderName, leaderBio, leaderPhoto, leaderContact } = body;
+  const { title, content, isActive } = body;
 
-  const level = await prisma.level.update({
+  const announcement = await prisma.announcement.update({
     where: { id },
     data: {
-      name,
-      description,
-      topic,
-      topicDate,
-      leader: {
-        upsert: {
-          create: {
-            name: leaderName,
-            bio: leaderBio,
-            photoUrl: leaderPhoto,
-            contact: leaderContact,
-          },
-          update: {
-            name: leaderName,
-            bio: leaderBio,
-            photoUrl: leaderPhoto,
-            contact: leaderContact,
-          },
-        },
-      },
+      title,
+      content,
+      isActive,
     },
-    include: { leader: true },
   });
 
-  return NextResponse.json(level);
+  return NextResponse.json(announcement);
 }
 
 export async function DELETE(
@@ -58,7 +40,7 @@ export async function DELETE(
 
   const params = await props.params;
   const id = params.id;
-  await prisma.level.delete({
+  await prisma.announcement.delete({
     where: { id },
   });
 
