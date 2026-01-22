@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id       String @id @default(cuid())
+  email    String @unique
+  password String
+  name     String?
+}
+
+model SessionInfo {
+  id        Int    @id @default(1)
+  day       String
+  timeRange String
+  location  String
+}
+
+model Level {
+  id          String  @id @default(cuid())
+  name        String
+  description String
+  leader      Leader?
+}
+
+model Leader {
+  id       String  @id @default(cuid())
+  name     String
+  bio      String?
+  photoUrl String?
+  levelId  String  @unique
+  level    Level   @relation(fields: [levelId], references: [id], onDelete: Cascade)
+}
+
+model Announcement {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Content {
+  key   String @id
+  value String
+}
