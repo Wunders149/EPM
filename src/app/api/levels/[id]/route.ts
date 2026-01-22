@@ -15,20 +15,28 @@ export async function PUT(
   const params = await props.params;
   const id = params.id;
   const body = await request.json();
-  const { name, description, leaderName, leaderBio, leaderPhoto } = body;
+  const { name, description, topic, leaderName, leaderBio, leaderPhoto, leaderContact } = body;
 
-  // We need to update Level and potentially Leader
-  // Note: If leader doesn't exist (legacy), we might need upsert, but our schema enforces leader creation.
   const level = await prisma.level.update({
     where: { id },
     data: {
       name,
       description,
+      topic,
       leader: {
-        update: {
-          name: leaderName,
-          bio: leaderBio,
-          photoUrl: leaderPhoto,
+        upsert: {
+          create: {
+            name: leaderName,
+            bio: leaderBio,
+            photoUrl: leaderPhoto,
+            contact: leaderContact,
+          },
+          update: {
+            name: leaderName,
+            bio: leaderBio,
+            photoUrl: leaderPhoto,
+            contact: leaderContact,
+          },
         },
       },
     },

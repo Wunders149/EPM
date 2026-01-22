@@ -17,17 +17,19 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json();
-  const { name, description, leaderName, leaderBio, leaderPhoto } = body;
+  const { name, description, topic, leaderName, leaderBio, leaderPhoto, leaderContact } = body;
 
   const level = await prisma.level.create({
     data: {
       name,
       description,
+      topic,
       leader: {
         create: {
           name: leaderName,
           bio: leaderBio,
           photoUrl: leaderPhoto,
+          contact: leaderContact,
         },
       },
     },

@@ -7,8 +7,7 @@ import SessionSection from '@/components/Home/SessionSection';
 import LevelsSection from '@/components/Home/LevelsSection';
 import AnnouncementsSection from '@/components/Home/Announcements';
 
-// Revalidate data every 60 seconds (ISR)
-export const revalidate = 60;
+export const revalidate = 0; // Disable cache for live updates in prototype
 
 async function getData() {
   const [content, session, levels, announcements] = await Promise.all([
@@ -30,14 +29,14 @@ export default async function Home() {
   const { contentMap, session, levels, announcements } = await getData();
 
   return (
-    <main>
+    <main style={{ backgroundColor: '#f8f9fa' }}>
       <Navbar />
       <Hero 
         title={contentMap['hero_title'] || 'Welcome to EPM'} 
         subtitle={contentMap['hero_subtitle'] || 'English Practice Mahajanga'} 
       />
-      <AnnouncementsSection announcements={announcements} />
       <SessionSection session={session} />
+      <AnnouncementsSection announcements={announcements} />
       <About text={contentMap['about_text'] || ''} />
       <LevelsSection levels={levels} />
       <Footer />

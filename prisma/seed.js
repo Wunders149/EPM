@@ -6,7 +6,7 @@ const prisma = new PrismaClient()
 async function main() {
   // 1. Create Admin User
   const password = await hash('admin123', 12)
-  const user = await prisma.user.upsert({
+  await prisma.user.upsert({
     where: { email: 'admin@epm.org' },
     update: {},
     create: {
@@ -15,10 +15,9 @@ async function main() {
       password,
     },
   })
-  console.log({ user })
 
   // 2. Create Session Info
-  const session = await prisma.sessionInfo.upsert({
+  await prisma.sessionInfo.upsert({
     where: { id: 1 },
     update: {},
     create: {
@@ -27,59 +26,61 @@ async function main() {
       location: 'American Corner Mahajanga',
     },
   })
-  console.log({ session })
 
   // 3. Create Levels
-  // Check if levels exist to avoid duplicates if re-running
   const count = await prisma.level.count()
   if (count === 0) {
     const levelsData = [
       {
         name: 'Beginner',
-        description: 'For those just starting their English journey. Focus on basic vocabulary and simple sentences.',
+        description: 'For those just starting their English journey.',
+        topic: 'Introducing Yourself & Hobbies',
         leaderName: 'Sarah R.',
         leaderBio: 'Passionate about teaching basics.',
+        contact: '+261 34 00 000 01'
       },
       {
         name: 'Intermediate',
-        description: 'Build confidence in conversation. Focus on fluency and expanding vocabulary.',
+        description: 'Build confidence in conversation and fluency.',
+        topic: 'The Impact of Social Media',
         leaderName: 'Michael T.',
         leaderBio: 'Loves discussing current events.',
+        contact: 'fb.com/michael.epm'
       },
       {
         name: 'Upper Intermediate',
-        description: 'Refine your skills. specific topics, debates, and advanced grammar.',
+        description: 'Refine your skills with debates and advanced grammar.',
+        topic: 'Climate Change & Global Solutions',
         leaderName: 'Jessica L.',
         leaderBio: 'Focused on professional English.',
+        contact: 'jessica@epm.org'
       },
     ]
 
     for (const l of levelsData) {
-      const level = await prisma.level.create({
+      await prisma.level.create({
         data: {
           name: l.name,
           description: l.description,
+          topic: l.topic,
           leader: {
             create: {
               name: l.leaderName,
               bio: l.leaderBio,
+              contact: l.contact,
               photoUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=${l.leaderName.replace(' ', '')}`,
             },
           },
         },
       })
-      console.log(`Created level: ${level.name}`)
     }
-  } else {
-    console.log('Levels already exist.')
   }
 
   // 4. Create Content
   const contentData = [
-    { key: 'hero_title', value: 'Speak English with Confidence' },
-    { key: 'hero_subtitle', value: 'Join the premier English learning community in Mahajanga.' },
+    { key: 'hero_title', value: 'Elevate Your English at EPM' },
+    { key: 'hero_subtitle', value: 'Mahajanga’s vibrant youth-led community for free English practice.' },
     { key: 'about_text', value: 'EPM (English Practice Mahajanga) is a free English learning community based in Mahajanga, Madagascar. Founded on December 1st, 2019 by Malagasy youth, EPM is a nonprofit initiative dedicated to providing free English practice opportunities to students and English lovers.' },
-    { key: 'why_join_text', value: 'Free sessions, supportive community, and expert guidance. Join us to unlock your potential.' },
   ]
 
   for (const c of contentData) {
@@ -89,7 +90,6 @@ async function main() {
       create: c,
     })
   }
-  console.log('Content seeded.')
 }
 
 main()

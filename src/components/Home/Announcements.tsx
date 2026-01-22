@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
+import Paper from '@mui/material/Paper';
+import CampaignIcon from '@mui/icons-material/Campaign';
 
 interface Announcement {
   id: string;
@@ -29,21 +29,49 @@ export default function AnnouncementsSection({ announcements }: AnnouncementsPro
   if (!announcements || announcements.length === 0) return null;
 
   return (
-    <Box sx={{ py: 4, bgcolor: 'warning.light' }}>
+    <Box sx={{ py: 4, background: 'linear-gradient(90deg, #fff 0%, #fff9c4 50%, #fff 100%)' }}>
       <Container maxWidth="md">
-        <Typography variant="h5" component="h2" gutterBottom fontWeight="bold">
-          Notices
-        </Typography>
-        {announcements.map((announcement) => (
-          <Alert key={announcement.id} severity="info" sx={{ mb: 2 }}>
-            <AlertTitle>{announcement.title}</AlertTitle>
-            {announcement.content}
-            {mounted && (
-              <Typography variant="caption" display="block" sx={{ mt: 1, opacity: 0.8 }}>
-                {new Date(announcement.createdAt).toLocaleDateString()}
+        {announcements.map((ann) => (
+          <Paper 
+            key={ann.id}
+            elevation={0}
+            sx={{ 
+              p: 3, 
+              mb: 2, 
+              borderRadius: 4, 
+              border: '2px solid',
+              borderColor: 'warning.main',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2,
+              position: 'relative',
+              overflow: 'hidden',
+              '&::before': {
+                content: '""',
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                bottom: 0,
+                width: '6px',
+                bgcolor: 'warning.main'
+              }
+            }}
+          >
+            <CampaignIcon color="warning" sx={{ fontSize: 40 }} />
+            <Box>
+              <Typography variant="h6" fontWeight="bold" color="warning.dark">
+                {ann.title}
               </Typography>
-            )}
-          </Alert>
+              <Typography variant="body1">
+                {ann.content}
+              </Typography>
+              {mounted && (
+                <Typography variant="caption" color="text.secondary">
+                  Posted on {new Date(ann.createdAt).toLocaleDateString()}
+                </Typography>
+              )}
+            </Box>
+          </Paper>
         ))}
       </Container>
     </Box>

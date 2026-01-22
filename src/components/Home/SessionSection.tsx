@@ -3,23 +3,11 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import Paper from '@mui/material/Paper';
+import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import TodayIcon from '@mui/icons-material/Today';
 import Grid from '@mui/material/Grid';
-
-// In MUI v6+ Grid is Grid2. But let's check imports. usually Grid from @mui/material is Grid v2.
-// Wait, imports usually are import Grid from '@mui/material/Grid'; (deprecated) or Grid2.
-// I'll use Stack for simplicity or Grid if I'm sure.
-// Let's use Grid (v2) from @mui/material/Grid2 if available, or just Grid if v5.
-// My package.json says "^7.3.7". This is MUI v7? No, MUI v6 is latest stable. Maybe 7 is alpha?
-// "version": "0.1.0" in package.json refers to my app.
-// "@mui/material": "^7.3.7" ???
-// NPM registry says @mui/material latest is 6.4.0.
-// Maybe I hallucinated the version in package.json read?
-// Let me read package.json again to be sure about MUI version.
 
 interface SessionProps {
   session: {
@@ -33,29 +21,57 @@ export default function SessionSection({ session }: SessionProps) {
   if (!session) return null;
 
   return (
-    <Box id="session" sx={{ py: 8 }}>
-      <Container maxWidth="md">
-        <Typography variant="h4" component="h2" align="center" gutterBottom color="primary">
-          Weekly Schedule
-        </Typography>
-        <Card sx={{ mt: 4, bgcolor: 'secondary.light', color: 'secondary.contrastText' }}>
-          <CardContent>
-            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, justifyContent: 'space-around', alignItems: 'center', gap: 2 }}>
-              <Box sx={{ textAlign: 'center' }}>
-                <CalendarMonthIcon fontSize="large" />
-                <Typography variant="h6">{session.day}</Typography>
+    <Box id="session" sx={{ py: 6, mt: -6, position: 'relative', zIndex: 10 }}>
+      <Container maxWidth="lg">
+        <Paper 
+          elevation={10} 
+          sx={{ 
+            p: { xs: 3, md: 5 }, 
+            borderRadius: 6, 
+            bgcolor: 'white',
+            border: '1px solid #e0e0e0'
+          }}
+        >
+          <Grid container spacing={4} alignItems="center">
+            <Grid size={{ xs: 12, md: 3 }}>
+              <Typography variant="h5" color="primary" fontWeight="900" sx={{ mb: { xs: 2, md: 0 } }}>
+                NEXT SESSION
+              </Typography>
+            </Grid>
+            <Grid size={{ xs: 12, md: 9 }}>
+              <Box sx={{ 
+                display: 'flex', 
+                flexDirection: { xs: 'column', md: 'row' }, 
+                justifyContent: 'space-between', 
+                gap: 4 
+              }}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <TodayIcon color="secondary" sx={{ mr: 2, fontSize: 30 }} />
+                  <Box>
+                    <Typography variant="caption" color="text.secondary" fontWeight="bold">DATE</Typography>
+                    <Typography variant="h6" fontWeight="bold">{session.day}</Typography>
+                  </Box>
+                </Box>
+
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <AccessTimeFilledIcon color="secondary" sx={{ mr: 2, fontSize: 30 }} />
+                  <Box>
+                    <Typography variant="caption" color="text.secondary" fontWeight="bold">TIME</Typography>
+                    <Typography variant="h6" fontWeight="bold">{session.timeRange}</Typography>
+                  </Box>
+                </Box>
+
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <LocationOnIcon color="secondary" sx={{ mr: 2, fontSize: 30 }} />
+                  <Box>
+                    <Typography variant="caption" color="text.secondary" fontWeight="bold">LOCATION</Typography>
+                    <Typography variant="h6" fontWeight="bold">{session.location}</Typography>
+                  </Box>
+                </Box>
               </Box>
-              <Box sx={{ textAlign: 'center' }}>
-                <AccessTimeIcon fontSize="large" />
-                <Typography variant="h6">{session.timeRange}</Typography>
-              </Box>
-              <Box sx={{ textAlign: 'center' }}>
-                <LocationOnIcon fontSize="large" />
-                <Typography variant="h6">{session.location}</Typography>
-              </Box>
-            </Box>
-          </CardContent>
-        </Card>
+            </Grid>
+          </Grid>
+        </Paper>
       </Container>
     </Box>
   );
