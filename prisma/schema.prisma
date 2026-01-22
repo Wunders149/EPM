@@ -25,7 +25,7 @@ model Level {
   id          String  @id @default(cuid())
   name        String
   description String
-  topic       String? // New: Weekly topic for this level
+  topic       String? 
   leader      Leader?
 }
 
@@ -34,9 +34,17 @@ model Leader {
   name     String
   bio      String?
   photoUrl String?
-  contact  String? // New: Contact info (WhatsApp/Facebook)
+  contact  String? 
   levelId  String  @unique
   level    Level   @relation(fields: [levelId], references: [id], onDelete: Cascade)
+}
+
+model GalleryItem {
+  id        String   @id @default(cuid())
+  type      String   // "PHOTO" or "VIDEO"
+  url       String   // Direct link for photo or YouTube ID/URL for video
+  caption   String?
+  createdAt DateTime @default(now())
 }
 
 model Announcement {

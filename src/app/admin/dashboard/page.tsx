@@ -6,7 +6,7 @@ import {
   Box, Container, Typography, Tab, Tabs, Button, TextField,
   Card, CardContent, IconButton, Dialog, DialogTitle,
   DialogContent, DialogActions, Snackbar, Alert, Switch, FormControlLabel,
-  Paper, Divider, Chip
+  Paper, Divider, Chip, Select, MenuItem, InputLabel, FormControl
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -14,6 +14,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LanguageIcon from '@mui/icons-material/Language';
+import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -42,11 +43,15 @@ export default function AdminDashboard() {
   const [sessionInfo, setSessionInfo] = useState<any>({});
   const [levels, setLevels] = useState<any[]>([]);
   const [announcements, setAnnouncements] = useState<any[]>([]);
+  const [gallery, setGallery] = useState<any[]>([]);
 
   // Dialog States
   const [openLevelDialog, setOpenLevelDialog] = useState(false);
   const [currentLevel, setCurrentLevel] = useState<any>(null); 
   
+  // Gallery Form State
+  const [newGalleryItem, setNewGalleryItem] = useState({ type: 'PHOTO', url: '', caption: '' });
+
   // Announcement Form State
   const [newAnnouncement, setNewAnnouncement] = useState({ title: '', content: '', isActive: true });
 
@@ -61,16 +66,18 @@ export default function AdminDashboard() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [contentRes, sessionRes, levelsRes, announcementsRes] = await Promise.all([
+      const [contentRes, sessionRes, levelsRes, announcementsRes, galleryRes] = await Promise.all([
         fetch('/api/content'),
         fetch('/api/session'),
         fetch('/api/levels'),
-        fetch('/api/announcements')
+        fetch('/api/announcements'),
+        fetch('/api/gallery')
       ]);
       setContent(await contentRes.json());
       setSessionInfo(await sessionRes.json());
       setLevels(await levelsRes.json());
       setAnnouncements(await announcementsRes.json());
+      setGallery(await galleryRes.json());
     } catch (e) {
       console.error(e);
       showSnackbar('Failed to load data', 'error');
@@ -164,6 +171,32 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleCreateGalleryItem = async () => {
+    try {
+      await fetch('/api/gallery', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newGalleryItem),
+      });
+      showSnackbar('Gallery item added');
+      setNewGalleryItem({ type: 'PHOTO', url: '', caption: '' });
+      fetchData();
+    } catch (e) {
+      showSnackbar('Failed to add to gallery', 'error');
+    }
+  };
+
+  const handleDeleteGalleryItem = async (id: string) => {
+    if (!confirm('Remove this from gallery?')) return;
+    try {
+      await fetch(`/api/gallery/${id}`, { method: 'DELETE' });
+      showSnackbar('Removed');
+      fetchData();
+    } catch (e) {
+      showSnackbar('Failed to remove', 'error');
+    }
+  };
+
   if (status === 'loading' || loading) return <Container sx={{ py: 4 }}><Typography>Loading Admin...</Typography></Container>;
 
   return (
@@ -189,6 +222,7 @@ export default function AdminDashboard() {
             <Tab label="Website Content" />
             <Tab label="Sunday Session" />
             <Tab label="Groups & Topics" />
+            <Tab label="Gallery & Videos" />
             <Tab label="Alerts" />
           </Tabs>
         </Box>
@@ -262,7 +296,7 @@ export default function AdminDashboard() {
         {/* Levels Tab */}
         <TabPanel value={tab} index={2}>
           <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="h6">Learning Groups & Leaders</Typography>
+            <Typography variant="h6">Learning Groups & Topics</Typography>
             <Button startIcon={<AddIcon />} variant="contained" onClick={() => { setCurrentLevel({}); setOpenLevelDialog(true); }}>
               Add New Group
             </Button>
@@ -292,8 +326,74 @@ export default function AdminDashboard() {
           </Grid>
         </TabPanel>
 
-        {/* Announcements Tab */}
+        {/* Gallery Tab */}
         <TabPanel value={tab} index={3}>
+          <Grid container spacing={4}>
+            <Grid size={{ xs: 12, md: 5 }}>
+              <Paper sx={{ p: 3, borderRadius: 3 }}>
+                <Typography variant="h6" gutterBottom>Add Photo or YouTube Video</Typography>
+                <FormControl fullWidth sx={{ mb: 2 }}>
+                  <InputLabel>Type</InputLabel>
+                  <Select
+                    value={newGalleryItem.type}
+                    label="Type"
+                    onChange={(e) => setNewGalleryItem({...newGalleryItem, type: e.target.value})}
+                  >
+                    <MenuItem value="PHOTO">Photo (Direct URL)</MenuItem>
+                    <MenuItem value="VIDEO">YouTube Video (URL)</MenuItem>
+                  </Select>
+                </FormControl>
+                <TextField 
+                  fullWidth 
+                  label={newGalleryItem.type === 'PHOTO' ? "Image URL" : "YouTube URL"} 
+                  sx={{ mb: 2 }} 
+                  value={newGalleryItem.url} 
+                  onChange={(e) => setNewGalleryItem({...newGalleryItem, url: e.target.value})} 
+                />
+                <TextField 
+                  fullWidth 
+                  label="Caption (Optional)" 
+                  sx={{ mb: 2 }} 
+                  value={newGalleryItem.caption} 
+                  onChange={(e) => setNewGalleryItem({...newGalleryItem, caption: e.target.value})} 
+                />
+                <Button variant="contained" fullWidth startIcon={<AddIcon />} onClick={handleCreateGalleryItem}>Add to Gallery</Button>
+              </Paper>
+            </Grid>
+            <Grid size={{ xs: 12, md: 7 }}>
+              <Typography variant="h6" gutterBottom>Gallery Items</Typography>
+              <Grid container spacing={2}>
+                {gallery.map((item) => (
+                  <Grid size={{ xs: 6, sm: 4 }} key={item.id}>
+                    <Card sx={{ position: 'relative' }}>
+                      <CardContent sx={{ p: 1 }}>
+                        <Box sx={{ position: 'relative', pt: '100%', bgcolor: 'black' }}>
+                          <Box 
+                            component="img" 
+                            src={item.type === 'PHOTO' ? item.url : `https://img.youtube.com/vi/${item.url.split('v=')[1]?.split('&')[0]}/0.jpg`}
+                            sx={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8 }}
+                          />
+                          <IconButton 
+                            size="small" 
+                            color="error" 
+                            sx={{ position: 'absolute', top: 5, right: 5, bgcolor: 'white' }}
+                            onClick={() => handleDeleteGalleryItem(item.id)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Box>
+                        <Typography variant="caption" noWrap display="block" sx={{ mt: 1 }}>{item.caption || 'No caption'}</Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))}
+              </Grid>
+            </Grid>
+          </Grid>
+        </TabPanel>
+
+        {/* Alerts Tab */}
+        <TabPanel value={tab} index={4}>
           <Grid container spacing={4}>
             <Grid size={{ xs: 12, md: 5 }}>
               <Paper sx={{ p: 3, borderRadius: 3 }}>
@@ -330,7 +430,7 @@ export default function AdminDashboard() {
         </DialogTitle>
         <DialogContent sx={{ mt: 2 }}>
           <TextField
-            margin="dense" label="Group Name (e.g. Beginner)" fullWidth
+            margin="dense" label="Group Name" fullWidth
             value={currentLevel?.name || ''}
             onChange={(e) => setCurrentLevel({ ...currentLevel, name: e.target.value })}
           />
@@ -343,7 +443,6 @@ export default function AdminDashboard() {
             margin="dense" label="CURRENT WEEKLY TOPIC" fullWidth sx={{ mt: 2 }}
             value={currentLevel?.topic || ''}
             onChange={(e) => setCurrentLevel({ ...currentLevel, topic: e.target.value })}
-            placeholder="e.g. Discussing the Future of AI"
           />
           
           <Typography variant="subtitle2" sx={{ mt: 3, mb: 1, color: 'primary.main', fontWeight: 'bold' }}>LEADER ASSIGNMENT</Typography>
@@ -358,7 +457,7 @@ export default function AdminDashboard() {
             onChange={(e) => setCurrentLevel({ ...currentLevel, leaderBio: e.target.value, leader: { ...currentLevel?.leader, bio: e.target.value } })}
           />
           <TextField
-            margin="dense" label="Leader Contact (Phone, FB, or Email)" fullWidth
+            margin="dense" label="Leader Contact" fullWidth
             value={currentLevel?.leader?.contact || currentLevel?.leaderContact || ''}
             onChange={(e) => setCurrentLevel({ ...currentLevel, leaderContact: e.target.value, leader: { ...currentLevel?.leader, contact: e.target.value } })}
           />

@@ -76,7 +76,19 @@ async function main() {
     }
   }
 
-  // 4. Create Content
+  // 4. Create Gallery Items
+  const galleryCount = await prisma.galleryItem.count()
+  if (galleryCount === 0) {
+    await prisma.galleryItem.createMany({
+      data: [
+        { type: 'VIDEO', url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', caption: 'EPM Anthem' }, // Placeholder
+        { type: 'PHOTO', url: 'https://images.unsplash.com/photo-1523240715639-963c6a0289cc?w=800', caption: 'Sunday Session - July 2025' },
+        { type: 'PHOTO', url: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800', caption: 'Group Debate in Action' }
+      ]
+    })
+  }
+
+  // 5. Create Content
   const contentData = [
     { key: 'hero_title', value: 'Elevate Your English at EPM' },
     { key: 'hero_subtitle', value: 'Mahajanga’s vibrant youth-led community for free English practice.' },

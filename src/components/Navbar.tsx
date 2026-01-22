@@ -22,6 +22,7 @@ export default function Navbar() {
           </Typography>
           <Button color="inherit" component={Link} href="#about">About</Button>
           <Button color="inherit" component={Link} href="#session">Schedule</Button>
+          <Button color="inherit" component={Link} href="#gallery">Gallery</Button>
           <Button color="inherit" component={Link} href="#levels">Levels</Button>
           
           {session ? (
