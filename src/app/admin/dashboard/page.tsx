@@ -7,13 +7,15 @@ import {
   Box, Container, Typography, Tab, Tabs, Button, TextField,
   Card, CardContent, IconButton, Dialog, DialogTitle,
   DialogContent, DialogActions, Snackbar, Alert, Switch, FormControlLabel,
-  Paper, Divider, Chip, Select, MenuItem, InputLabel, FormControl
+  Paper, Divider, Chip, Select, MenuItem, InputLabel, FormControl, Menu
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import LogoutIcon from '@mui/icons-material/Logout';
+import HomeIcon from '@mui/icons-material/Home';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -47,6 +49,9 @@ export default function AdminDashboard() {
   // Dialog States
   const [openLevelDialog, setOpenLevelDialog] = useState(false);
   const [currentLevel, setCurrentLevel] = useState<any>(null); 
+  
+  // User Menu State
+  const [userMenuAnchor, setUserMenuAnchor] = useState<null | HTMLElement>(null);
   
   // Gallery Form State
   const [newGalleryItem, setNewGalleryItem] = useState({ type: 'PHOTO', url: '', caption: '' });
@@ -226,21 +231,87 @@ export default function AdminDashboard() {
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#f0f2f5' }}>
-      <Paper elevation={0} sx={{ borderRadius: 0, bgcolor: 'primary.dark', color: 'white', py: 2, mb: 4 }}>
+      <Paper elevation={3} sx={{ borderRadius: 0, background: 'linear-gradient(135deg, #01579b 0%, #0288d1 100%)', color: 'white', py: 2, mb: 4, position: 'sticky', top: 0, zIndex: 100 }}>
         <Container maxWidth="lg">
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Image 
-                src="/logo.png" 
-                alt="EPM Logo" 
-                width={40} 
-                height={40}
-              />
-              <Typography variant="h5" fontWeight="900">EPM ADMIN</Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 1 }}>
+            {/* Logo Section */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, minWidth: 0 }}>
+              <Box sx={{ 
+                bgcolor: 'rgba(255,255,255,0.1)', 
+                p: 0.75, 
+                borderRadius: 2,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0
+              }}>
+                <Image 
+                  src="/logo.png" 
+                  alt="EPM Logo" 
+                  width={40} 
+                  height={40}
+                />
+              </Box>
+              <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+                <Typography variant="h6" fontWeight="900" sx={{ letterSpacing: 0.5 }}>EPM ADMIN</Typography>
+                <Typography variant="caption" sx={{ opacity: 0.9 }}>Dashboard</Typography>
+              </Box>
             </Box>
-            <Box>
-              <Button color="inherit" onClick={() => router.push('/')} sx={{ mr: 2 }}>Site Home</Button>
-              <Button color="error" variant="contained" startIcon={<LogoutIcon />} onClick={() => signOut()}>Logout</Button>
+
+            {/* User & Actions Section */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              {/* Site Home Button - Hidden on mobile */}
+              <Button 
+                color="inherit" 
+                startIcon={<HomeIcon />}
+                onClick={() => router.push('/')} 
+                sx={{ 
+                  display: { xs: 'none', sm: 'inline-flex' },
+                  textTransform: 'none',
+                  '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' }
+                }}
+              >
+                Site Home
+              </Button>
+
+              {/* User Menu - Responsive */}
+              <Button 
+                onClick={(e) => setUserMenuAnchor(e.currentTarget)}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1,
+                  color: 'inherit',
+                  textTransform: 'none',
+                  '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' },
+                  p: { xs: 0.5, sm: 1 }
+                }}
+              >
+                <AccountCircleIcon sx={{ fontSize: { xs: '1.5rem', sm: '1.8rem' } }} />
+                <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+                  <Typography variant="subtitle2" fontWeight="bold" sx={{ fontSize: '0.9rem' }}>{session?.user?.name || 'Admin'}</Typography>
+                  <Typography variant="caption" sx={{ opacity: 0.85, fontSize: '0.75rem' }}>{session?.user?.email}</Typography>
+                </Box>
+              </Button>
+
+              {/* User Dropdown Menu */}
+              <Menu
+                anchorEl={userMenuAnchor}
+                open={Boolean(userMenuAnchor)}
+                onClose={() => setUserMenuAnchor(null)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+              >
+                <MenuItem sx={{ display: { xs: 'flex', sm: 'none' } }} onClick={() => { router.push('/'); setUserMenuAnchor(null); }}>
+                  <HomeIcon sx={{ mr: 1 }} />
+                  Site Home
+                </MenuItem>
+                <Divider sx={{ display: { xs: 'block', sm: 'none' } }} />
+                <MenuItem onClick={() => { signOut(); setUserMenuAnchor(null); }}>
+                  <LogoutIcon sx={{ mr: 1 }} />
+                  Logout
+                </MenuItem>
+              </Menu>
             </Box>
           </Box>
         </Container>
