@@ -39,7 +39,7 @@ export default async function Home() {
       />
       <SessionSection session={session} levels={levels} />
       <AnnouncementsSection announcements={announcements} />
-      <About text={contentMap['about_text'] || ''} />
+      <About text={contentMap['about_text'] || ''} communityPhoto={contentMap['inspiring_community_photo']} />
       <GallerySection items={gallery} />
       <LevelsSection levels={levels} />
       <Footer />

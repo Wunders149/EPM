@@ -23,6 +23,7 @@ interface SessionProps {
     day: string;
     timeRange: string;
     location: string;
+    photoUrl?: string | null;
   } | null;
   levels: Level[];
 }
@@ -39,7 +40,11 @@ export default function SessionSection({ session, levels }: SessionProps) {
             p: { xs: 3, md: 5 }, 
             borderRadius: 6, 
             bgcolor: 'white',
-            border: '1px solid #e0e0e0'
+            border: '1px solid #e0e0e0',
+            backgroundImage: session.photoUrl ? `linear-gradient(rgba(255,255,255,0.95), rgba(255,255,255,0.95)), url(${session.photoUrl})` : 'none',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundAttachment: 'fixed'
           }}
         >
           <Grid container spacing={4} alignItems="flex-start">

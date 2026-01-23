@@ -8,9 +8,10 @@ import Paper from '@mui/material/Paper';
 
 interface AboutProps {
   text: string;
+  communityPhoto?: string;
 }
 
-export default function About({ text }: AboutProps) {
+export default function About({ text, communityPhoto }: AboutProps) {
   return (
     <Box id="about" sx={{ py: 12, bgcolor: 'white' }}>
       <Container maxWidth="lg">
@@ -47,10 +48,14 @@ export default function About({ text }: AboutProps) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                border: '2px dashed #90caf9'
+                border: '2px dashed #90caf9',
+                overflow: 'hidden',
+                backgroundImage: communityPhoto ? `url(${communityPhoto})` : 'none',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center'
               }}
             >
-              <Typography color="primary" variant="h6" sx={{ opacity: 0.5 }}>[ Inspiring Community Photo ]</Typography>
+              {!communityPhoto && <Typography color="primary" variant="h6" sx={{ opacity: 0.5 }}>[ Inspiring Community Photo ]</Typography>}
             </Paper>
           </Grid>
         </Grid>

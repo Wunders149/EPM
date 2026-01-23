@@ -3,9 +3,9 @@
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 
 export default function Navbar() {
@@ -15,11 +15,18 @@ export default function Navbar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" color="default" elevation={1}>
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 'bold', color: 'primary.main' }}>
-            <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-              EPM
+          <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
+            <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
+              <Image 
+                src="/logo.png" 
+                alt="EPM Logo" 
+                width={40} 
+                height={40}
+                priority
+                style={{ cursor: 'pointer' }}
+              />
             </Link>
-          </Typography>
+          </Box>
           <Button color="inherit" component={Link} href="#about">About</Button>
           <Button color="inherit" component={Link} href="#session">Schedule</Button>
           <Button color="inherit" component={Link} href="#gallery">Gallery</Button>

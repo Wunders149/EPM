@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import {
   Box, Container, Typography, Tab, Tabs, Button, TextField,
   Card, CardContent, IconButton, Dialog, DialogTitle,
@@ -13,7 +14,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import LogoutIcon from '@mui/icons-material/Logout';
-import LanguageIcon from '@mui/icons-material/Language';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -229,8 +229,13 @@ export default function AdminDashboard() {
       <Paper elevation={0} sx={{ borderRadius: 0, bgcolor: 'primary.dark', color: 'white', py: 2, mb: 4 }}>
         <Container maxWidth="lg">
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <LanguageIcon />
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Image 
+                src="/logo.png" 
+                alt="EPM Logo" 
+                width={40} 
+                height={40}
+              />
               <Typography variant="h5" fontWeight="900">EPM ADMIN</Typography>
             </Box>
             <Box>
@@ -281,6 +286,30 @@ export default function AdminDashboard() {
                   onBlur={() => handleSaveContent('about_text', content.about_text)}
                 />
               </Grid>
+              <Grid size={12}>
+                <Divider sx={{ my: 2 }} />
+                <Typography variant="subtitle1" color="primary" fontWeight="bold" sx={{ my: 2 }}>Inspiring Community Photo</Typography>
+              </Grid>
+              <Grid size={12}>
+                <TextField
+                  fullWidth label="Inspiring Community Photo URL" variant="filled" helperText="Enter direct URL to the inspiring community photo"
+                  value={content.inspiring_community_photo || ''}
+                  onChange={(e) => setContent({ ...content, inspiring_community_photo: e.target.value })}
+                  onBlur={() => handleSaveContent('inspiring_community_photo', content.inspiring_community_photo)}
+                />
+              </Grid>
+              {content.inspiring_community_photo && (
+                <Grid size={12}>
+                  <Box sx={{ position: 'relative', width: '100%', maxWidth: '400px', height: '300px', borderRadius: 2, overflow: 'hidden', border: '1px solid #ddd' }}>
+                    <Box 
+                      component="img" 
+                      src={content.inspiring_community_photo} 
+                      sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      onError={() => console.log('Image failed to load')}
+                    />
+                  </Box>
+                </Grid>
+              )}
             </Grid>
           </Paper>
         </TabPanel>
@@ -311,6 +340,29 @@ export default function AdminDashboard() {
                   onChange={(e) => setSessionInfo({ ...sessionInfo, location: e.target.value })}
                 />
               </Grid>
+              <Grid size={12}>
+                <Divider sx={{ my: 2 }} />
+                <Typography variant="subtitle1" color="primary" fontWeight="bold" sx={{ my: 2 }}>Session Photo</Typography>
+              </Grid>
+              <Grid size={12}>
+                <TextField
+                  fullWidth label="Session Photo URL" variant="filled" helperText="Enter direct URL to a photo representing the Sunday session"
+                  value={sessionInfo.photoUrl || ''}
+                  onChange={(e) => setSessionInfo({ ...sessionInfo, photoUrl: e.target.value })}
+                />
+              </Grid>
+              {sessionInfo.photoUrl && (
+                <Grid size={12}>
+                  <Box sx={{ position: 'relative', width: '100%', maxWidth: '400px', height: '250px', borderRadius: 2, overflow: 'hidden', border: '1px solid #ddd' }}>
+                    <Box 
+                      component="img" 
+                      src={sessionInfo.photoUrl} 
+                      sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      onError={() => console.log('Image failed to load')}
+                    />
+                  </Box>
+                </Grid>
+              )}
               <Grid size={12}>
                 <Button variant="contained" size="large" onClick={handleSaveSession}>Update Global Schedule</Button>
               </Grid>

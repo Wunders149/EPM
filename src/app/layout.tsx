@@ -5,6 +5,11 @@ import Providers from "@/components/Providers";
 export const metadata: Metadata = {
   title: "EPM - English Practice Mahajanga",
   description: "A free English learning community based in Mahajanga, Madagascar.",
+  icons: {
+    icon: "/favicon/favicon.ico",
+    apple: "/favicon/apple-touch-icon.png",
+    shortcut: "/favicon/favicon.ico",
+  },
 };
 
 export default function RootLayout({

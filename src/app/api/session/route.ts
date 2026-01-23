@@ -17,11 +17,11 @@ export async function PUT(request: Request) {
   }
 
   const body = await request.json();
-  const { day, timeRange, location } = body;
+  const { day, timeRange, location, photoUrl } = body;
 
   const updated = await prisma.sessionInfo.update({
     where: { id: 1 },
-    data: { day, timeRange, location },
+    data: { day, timeRange, location, photoUrl },
   });
 
   return NextResponse.json(updated);

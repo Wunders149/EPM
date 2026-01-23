@@ -15,10 +15,11 @@ model User {
 }
 
 model SessionInfo {
-  id        Int    @id @default(1)
+  id        Int     @id @default(1)
   day       String
   timeRange String
   location  String
+  photoUrl  String?
 }
 
 model Level {
