@@ -31,7 +31,7 @@ export default async function Home() {
   const { contentMap, session, levels, announcements, gallery } = await getData();
 
   return (
-    <main style={{ backgroundColor: '#f8f9fa' }}>
+    <main style={{ backgroundColor: '#f8f9fa', marginTop: '64px' }}>
       <Navbar />
       <Hero 
         title={contentMap['hero_title'] || 'Welcome to EPM'} 
