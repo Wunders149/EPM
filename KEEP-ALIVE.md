@@ -28,15 +28,13 @@ npm run keep-alive
 node keep-alive.js &
 ```
 
-**With PM2 (Recommended):**
+**With PM2 (Linux/macOS only - NOT supported on Windows):**
 ```bash
-# Install PM2 globally
+# This does NOT work on Windows - use Task Scheduler instead
 npm install -g pm2
 
-# Start the keep-alive service
+# Linux/macOS only:
 pm2 start keep-alive.js --name "epm-keep-alive"
-
-# Auto-restart on reboot
 pm2 startup
 pm2 save
 
@@ -46,6 +44,8 @@ pm2 logs epm-keep-alive
 # Stop the service
 pm2 stop epm-keep-alive
 ```
+
+**Note:** Windows users should skip PM2 and use Task Scheduler (see Option 3 above)
 
 ### Option 2: Shell Script (Bash)
 
@@ -75,34 +75,22 @@ crontab -e
 
 **Requirements:**
 - Windows 10/11
-- PowerShell or Command Prompt
+- Node.js installed
 
-**Create a PowerShell script:**
-```powershell
-# keep-alive.ps1
-$appUrl = "https://epm-web.onrender.com"
-$interval = 5 * 60  # 5 minutes
+⚠️ **Note:** PM2's `startup` command does NOT work on Windows. Use Task Scheduler instead.
 
-while ($true) {
-    try {
-        $response = Invoke-WebRequest -Uri $appUrl -UseBasicParsing
-        Write-Host "$(Get-Date -Format 'yyyy-MM-ddTHH:mm:ss'): Pinged $appUrl - Status $($response.StatusCode)"
-    }
-    catch {
-        Write-Host "$(Get-Date -Format 'yyyy-MM-ddTHH:mm:ss'): Error pinging $appUrl - $_"
-    }
-    Start-Sleep -Seconds $interval
-}
-```
+**Setup (Detailed guide in WINDOWS-TASK-SCHEDULER.md):**
 
-**Schedule with Task Scheduler:**
-1. Open Task Scheduler
-2. Create Basic Task → "EPM Keep-Alive"
-3. Set trigger: "At startup"
-4. Set action: 
-   - Program: `powershell.exe`
-   - Arguments: `-ExecutionPolicy Bypass -File "C:\path\to\keep-alive.ps1"`
-5. Check "Run with highest privileges"
+Quick version:
+1. Open Task Scheduler (`taskschd.msc`)
+2. Create Basic Task → Name: "EPM Keep-Alive"
+3. Trigger: "At startup"
+4. Action: Program `node`, Arguments: `keep-alive.js`
+5. Set Start in: `C:\Users\Admin\Documents\Wunders149\EPM`
+6. Run with highest privileges
+7. Run whether user is logged in or not
+
+**See WINDOWS-TASK-SCHEDULER.md for detailed step-by-step screenshots and troubleshooting.**
 
 ## Configuration
 
