@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "prisma generate && prisma migrate deploy && next build",
     "start": "next start",
+    "keep-alive": "node keep-alive.js",
     "lint": "eslint"
   },
   "dependencies": {
