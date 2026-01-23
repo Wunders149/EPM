@@ -307,7 +307,7 @@ export default function AdminDashboard() {
                   Site Home
                 </MenuItem>
                 <Divider sx={{ display: { xs: 'block', sm: 'none' } }} />
-                <MenuItem onClick={() => { signOut({ redirectTo: '/' }); setUserMenuAnchor(null); }}>
+                <MenuItem onClick={() => { signOut({ redirect: true }); setUserMenuAnchor(null); }}>
                   <LogoutIcon sx={{ mr: 1 }} />
                   Logout
                 </MenuItem>
