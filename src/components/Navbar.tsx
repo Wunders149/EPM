@@ -75,13 +75,9 @@ export default function Navbar() {
             </Button>
           ))}
           
-          {session ? (
+          {session && (
             <Button color="primary" variant="contained" component={Link} href="/admin/dashboard" sx={{ ml: 2 }}>
               Dashboard
-            </Button>
-          ) : (
-            <Button color="primary" variant="outlined" component={Link} href="/auth/signin" sx={{ ml: 2 }}>
-              Login
             </Button>
           )}
         </Toolbar>
