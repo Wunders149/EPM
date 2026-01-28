@@ -38,5 +38,15 @@ export const authOptions: AuthOptions = {
   pages: {
     signIn: "/auth/signin",
   },
+  callbacks: {
+    async redirect({ url, baseUrl }) {
+      // If the URL is relative or points to the same origin, use it as-is
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      // If the URL is on the same origin, use it
+      if (new URL(url).origin === baseUrl) return url;
+      // Default to home page
+      return baseUrl;
+    },
+  },
   secret: process.env.NEXTAUTH_SECRET,
 };
