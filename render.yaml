@@ -16,5 +16,9 @@ services:
         value: https://epm-401.onrender.com
       - key: NEXTAUTH_SECRET
         generateValue: true
+      - key: ADMIN_EMAIL
+        sync: false  # Set this to your admin email
+      - key: ADMIN_PASSWORD
+        sync: false  # Set this to bcrypt hash of your admin password
       - key: NODE_VERSION
         value: 20
