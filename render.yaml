@@ -12,6 +12,8 @@ services:
     envVars:
       - key: DATABASE_URL
         value: file:/opt/render/project/src/prisma/data/prod.db
+      - key: NEXTAUTH_URL
+        value: https://epm-401.onrender.com
       - key: NEXTAUTH_SECRET
         generateValue: true
       - key: NODE_VERSION

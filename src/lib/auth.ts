@@ -38,10 +38,5 @@ export const authOptions: AuthOptions = {
   pages: {
     signIn: "/auth/signin",
   },
-  callbacks: {
-    async redirect({ url, baseUrl }) {
-      return url.startsWith(baseUrl) ? url : baseUrl + url;
-    },
-  },
   secret: process.env.NEXTAUTH_SECRET,
 };
