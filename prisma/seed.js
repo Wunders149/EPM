@@ -5,7 +5,10 @@ const prisma = new PrismaClient()
 
 async function main() {
   // 1. Create Admin User
-  const password = await hash('admin123', 12)
+  // NOTE: This is the fallback default password. For production, set ADMIN_EMAIL and ADMIN_PASSWORD environment variables
+  // and change this password immediately after first login
+  const defaultPassword = process.env.DEFAULT_ADMIN_PASSWORD || 'SecurePass2026!';
+  const password = await hash(defaultPassword, 12)
   await prisma.user.upsert({
     where: { email: 'admin@epm.org' },
     update: {},

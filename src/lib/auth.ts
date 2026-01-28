@@ -2,6 +2,7 @@ import { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
 import { compare } from "bcryptjs";
+import { validateAdminCredentials, validateDefaultAdminCredentials } from "@/lib/adminAuth";
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -14,6 +15,27 @@ export const authOptions: AuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
+        // First, check if credentials match environment variable admin
+        const isEnvAdmin = await validateAdminCredentials(credentials.email, credentials.password);
+        if (isEnvAdmin) {
+          return {
+            id: "env-admin",
+            email: credentials.email,
+            name: "Environment Admin",
+          };
+        }
+
+        // Then check if credentials match the default seeded admin (for backward compatibility)
+        const isDefaultAdmin = await validateDefaultAdminCredentials(credentials.email, credentials.password);
+        if (isDefaultAdmin) {
+          return {
+            id: "default-admin",
+            email: credentials.email,
+            name: "Default Admin",
+          };
+        }
+
+        // Finally, check database users
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
