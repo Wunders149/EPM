@@ -48,11 +48,11 @@ export default function AdminDashboard() {
 
   // Dialog States
   const [openLevelDialog, setOpenLevelDialog] = useState(false);
-  const [currentLevel, setCurrentLevel] = useState<any>(null); 
-  
+  const [currentLevel, setCurrentLevel] = useState<any>(null);
+
   // User Menu State
   const [userMenuAnchor, setUserMenuAnchor] = useState<null | HTMLElement>(null);
-  
+
   // Gallery Form State
   const [newGalleryItem, setNewGalleryItem] = useState({ type: 'PHOTO', url: '', caption: '' });
 
@@ -123,7 +123,7 @@ export default function AdminDashboard() {
   const handleSaveLevel = async () => {
     const method = currentLevel.id ? 'PUT' : 'POST';
     const url = currentLevel.id ? `/api/levels/${currentLevel.id}` : '/api/levels';
-    
+
     const body = {
         name: currentLevel.name,
         description: currentLevel.description,
@@ -236,19 +236,19 @@ export default function AdminDashboard() {
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 1 }}>
             {/* Logo Section */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, minWidth: 0 }}>
-              <Box sx={{ 
-                bgcolor: 'rgba(255,255,255,0.1)', 
-                p: 0.75, 
+              <Box sx={{
+                bgcolor: 'rgba(255,255,255,0.1)',
+                p: 0.75,
                 borderRadius: 2,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 flexShrink: 0
               }}>
-                <Image 
-                  src="/logo.png" 
-                  alt="EPM Logo" 
-                  width={40} 
+                <Image
+                  src="/logo.png"
+                  alt="EPM Logo"
+                  width={40}
                   height={40}
                 />
               </Box>
@@ -261,11 +261,11 @@ export default function AdminDashboard() {
             {/* User & Actions Section */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               {/* Site Home Button - Hidden on mobile */}
-              <Button 
-                color="inherit" 
+              <Button
+                color="inherit"
                 startIcon={<HomeIcon />}
-                onClick={() => router.push('/')} 
-                sx={{ 
+                onClick={() => router.push('/')}
+                sx={{
                   display: { xs: 'none', sm: 'inline-flex' },
                   textTransform: 'none',
                   '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' }
@@ -275,7 +275,7 @@ export default function AdminDashboard() {
               </Button>
 
               {/* User Menu - Responsive */}
-              <Button 
+              <Button
                 onClick={(e) => setUserMenuAnchor(e.currentTarget)}
                 sx={{
                   display: 'flex',
@@ -372,9 +372,9 @@ export default function AdminDashboard() {
               {content.inspiring_community_photo && (
                 <Grid size={12}>
                   <Box sx={{ position: 'relative', width: '100%', maxWidth: '400px', height: '300px', borderRadius: 2, overflow: 'hidden', border: '1px solid #ddd' }}>
-                    <Box 
-                      component="img" 
-                      src={content.inspiring_community_photo} 
+                    <Box
+                      component="img"
+                      src={content.inspiring_community_photo}
                       sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       onError={() => console.log('Image failed to load')}
                     />
@@ -425,9 +425,9 @@ export default function AdminDashboard() {
               {sessionInfo.photoUrl && (
                 <Grid size={12}>
                   <Box sx={{ position: 'relative', width: '100%', maxWidth: '400px', height: '250px', borderRadius: 2, overflow: 'hidden', border: '1px solid #ddd' }}>
-                    <Box 
-                      component="img" 
-                      src={sessionInfo.photoUrl} 
+                    <Box
+                      component="img"
+                      src={sessionInfo.photoUrl}
                       sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       onError={() => console.log('Image failed to load')}
                     />
@@ -490,19 +490,19 @@ export default function AdminDashboard() {
                     <MenuItem value="VIDEO">YouTube Video (URL)</MenuItem>
                   </Select>
                 </FormControl>
-                <TextField 
-                  fullWidth 
-                  label={newGalleryItem.type === 'PHOTO' ? "Image URL" : "YouTube URL"} 
-                  sx={{ mb: 2 }} 
-                  value={newGalleryItem.url} 
-                  onChange={(e) => setNewGalleryItem({...newGalleryItem, url: e.target.value})} 
+                <TextField
+                  fullWidth
+                  label={newGalleryItem.type === 'PHOTO' ? "Image URL" : "YouTube URL"}
+                  sx={{ mb: 2 }}
+                  value={newGalleryItem.url}
+                  onChange={(e) => setNewGalleryItem({...newGalleryItem, url: e.target.value})}
                 />
-                <TextField 
-                  fullWidth 
-                  label="Caption (Optional)" 
-                  sx={{ mb: 2 }} 
-                  value={newGalleryItem.caption} 
-                  onChange={(e) => setNewGalleryItem({...newGalleryItem, caption: e.target.value})} 
+                <TextField
+                  fullWidth
+                  label="Caption (Optional)"
+                  sx={{ mb: 2 }}
+                  value={newGalleryItem.caption}
+                  onChange={(e) => setNewGalleryItem({...newGalleryItem, caption: e.target.value})}
                 />
                 <Button variant="contained" fullWidth startIcon={<AddIcon />} onClick={handleCreateGalleryItem}>Add to Gallery</Button>
               </Paper>
@@ -515,14 +515,17 @@ export default function AdminDashboard() {
                     <Card sx={{ position: 'relative' }}>
                       <CardContent sx={{ p: 1 }}>
                         <Box sx={{ position: 'relative', pt: '100%', bgcolor: 'black' }}>
-                          <Box 
-                            component="img" 
-                            src={item.type === 'PHOTO' ? item.url : (item.url.includes('v=') ? `https://img.youtube.com/vi/${item.url.split('v=')[1]?.split('&')[0]}/0.jpg` : (item.url.includes('youtu.be/') ? `https://img.youtube.com/vi/${item.url.split('/').pop()}/0.jpg` : ''))}
+                          <Box
+                            component="img"
+                            src={item.type === 'PHOTO' ? item.url : (item.url.includes('v=') ? (() => {
+                              const videoId = item.url.split('v=')[1]?.split(/[&?]/)[0];
+                              return videoId ? `https://img.youtube.com/vi/${videoId}/0.jpg` : '';
+                            })() : (item.url.includes('youtu.be/') ? `https://img.youtube.com/vi/${item.url.split('/').pop()?.split('?')[0]}/0.jpg` : ''))}
                             sx={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8 }}
                           />
-                          <IconButton 
-                            size="small" 
-                            color="error" 
+                          <IconButton
+                            size="small"
+                            color="error"
                             sx={{ position: 'absolute', top: 5, right: 5, bgcolor: 'white' }}
                             onClick={() => handleDeleteGalleryItem(item.id)}
                           >
@@ -559,9 +562,9 @@ export default function AdminDashboard() {
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
                       <Typography variant="subtitle1" fontWeight="bold">{ann.title}</Typography>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <FormControlLabel 
-                          control={<Switch size="small" checked={ann.isActive} onChange={() => handleToggleAnnouncementActive(ann)} />} 
-                          label={ann.isActive ? "Visible" : "Hidden"} 
+                        <FormControlLabel
+                          control={<Switch size="small" checked={ann.isActive} onChange={() => handleToggleAnnouncementActive(ann)} />}
+                          label={ann.isActive ? "Visible" : "Hidden"}
                         />
                         <IconButton size="small" color="error" onClick={() => handleDeleteAnnouncement(ann.id)}>
                           <DeleteIcon fontSize="small" />
@@ -605,7 +608,7 @@ export default function AdminDashboard() {
             value={currentLevel?.topic || ''}
             onChange={(e) => setCurrentLevel({ ...currentLevel, topic: e.target.value })}
           />
-          
+
           <Typography variant="subtitle2" sx={{ mt: 3, mb: 1, color: 'primary.main', fontWeight: 'bold' }}>LEADER ASSIGNMENT</Typography>
           <TextField
             margin="dense" label="Leader Name" fullWidth
